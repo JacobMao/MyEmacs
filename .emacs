@@ -9,6 +9,30 @@
 
 (add-to-list 'load-path "~/.emacs.d/otherPackages")
 
+;; Start - General
+(global-set-key (kbd "C-<return>") 'set-mark-command)
+
+(setq gc-cons-threshold 64000000)
+(add-hook 'after-init-hook #'(lambda ()
+                               ;; restore after startup
+                               (setq gc-cons-threshold 800000)))
+
+(global-hl-line-mode t)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq auto-save-default nil)
+
+(setq ring-bell-function 'ignore)
+
+(setq mac-option-key-is-meta nil)
+(setq mac-command-key-is-meta t)
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier nil)
+
+(global-set-key (kbd "C-S-K") 'kill-whole-line)
+
+;; End - General
 
 ;; Start - Japanese holidays
 (eval-after-load "holidays"
@@ -53,12 +77,6 @@
                         (agenda . 5)))
 ;; End - Dashboard
 
-;; Start - counsel-dash
-(setq counsel-dash-browser-func 'browse-web)
-(setq counsel-dash-common-docsets '("C++"))
-(global-set-key "\C-c\ \C-v\ q" 'counsel-dash)
-;; End - counsel-dash
-
 ;; Start - Youdao
 (use-package youdao-dictionary
   :ensure t
@@ -69,7 +87,31 @@
 (modern-c++-font-lock-global-mode t)
 ;; End - C++ 11 Syntax highlighting
 
-(setq leetcode-prefer-language "c++")
+(use-package dired-sidebar
+  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
+  :ensure t
+  :commands (dired-sidebar-toggle-sidebar)
+  :init
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  :config
+  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+
+  (setq dired-sidebar-subtree-line-prefix "__")
+  (setq dired-sidebar-theme 'vscode)
+  (setq dired-sidebar-use-term-integration t)
+  (setq dired-sidebar-use-custom-font t))
+
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'dracula t)
@@ -81,8 +123,9 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
+ '(display-time-mode t)
  '(package-selected-packages
-   '(modern-cpp-font-lock use-package counsel-dash dashboard magit leetcode markdown-mode org ##))
+   '(lsp-ui lsp-mode company-flx company smex expand-region fill-column-indicator modern-cpp-font-lock use-package counsel-dash dashboard magit leetcode markdown-mode org ##))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
