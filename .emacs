@@ -5,12 +5,17 @@
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+
 (require 'use-package)
 
 (add-to-list 'load-path "~/.emacs.d/otherPackages")
 
 ;; Start - General
 (global-set-key (kbd "C-<return>") 'set-mark-command)
+(global-set-key (kbd "S-C-s") 'query-replace)
 
 (setq gc-cons-threshold 64000000)
 (add-hook 'after-init-hook #'(lambda ()
@@ -30,7 +35,11 @@
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier nil)
 
-(global-set-key (kbd "C-S-K") 'kill-whole-line)
+
+;; (global-set-key (kbd "C-S-K") 'kill-whole-line)
+(setq kill-whole-line t)
+
+(electric-pair-mode 1)
 
 ;; End - General
 
@@ -77,12 +86,6 @@
                         (agenda . 5)))
 ;; End - Dashboard
 
-;; Start - Youdao
-(use-package youdao-dictionary
-  :ensure t
-  :bind (("C-c t y" . youdao-dictionary-search-at-point+)))
-;; End - Youdao
-
 ;; Start - C++ 11 Syntax highlighting
 (modern-c++-font-lock-global-mode t)
 ;; End - C++ 11 Syntax highlighting
@@ -113,8 +116,62 @@
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
+;; Start - Switch window
+(require 'switch-window)
+(global-set-key (kbd "C-x o") 'switch-window)
+(global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
+(global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
+(global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
+(global-set-key (kbd "C-x 0") 'switch-window-then-delete)
+
+(global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
+(global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
+(global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
+(global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
+
+(global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
+(global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
+
+(global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
+;; End - Switch window
+
+
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'dracula t)
+
+;; Start - C++ IDE
+(require 'helm-xref)
+(define-key global-map [remap find-file] #'helm-find-files)
+(define-key global-map [remap execute-extended-command] #'helm-M-x)
+(define-key global-map [remap switch-to-buffer] #'helm-mini)
+
+(which-key-mode)
+(add-hook 'c++-mode-hook 'company-mode)
+
+(setq lsp-clients-clangd-executable "/usr/local/opt/llvm/bin/clangd")
+(add-hook 'c++-mode-hook 'lsp)
+
+(setq lsp-ui-doc-enable nil)
+
+(setq read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 1
+      lsp-idle-delay 0.1 ;; clangd is fast
+      ;; be more ide-ish
+      lsp-headerline-breadcrumb-enable t)
+
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (require 'dap-cpptools)
+  (yas-global-mode))
+
+(add-hook 'c++-mode-hook
+  (lambda ()
+    (set (make-local-variable 'compile-command)
+         (format "clang++ -g -std=c++17 %s" (buffer-name)))))
+
+;; End - C++ IDE
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -125,7 +182,7 @@
  '(column-number-mode t)
  '(display-time-mode t)
  '(package-selected-packages
-   '(lsp-ui lsp-mode company-flx company smex expand-region fill-column-indicator modern-cpp-font-lock use-package counsel-dash dashboard magit leetcode markdown-mode org ##))
+   '(switch-window lsp-ui lsp-mode company-flx company smex expand-region fill-column-indicator modern-cpp-font-lock use-package counsel-dash dashboard magit markdown-mode org yasnippet lsp-mode  lsp-treemacs helm-lsp projectile hydra flycheck avy which-key helm-xref dap-mode ##))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
