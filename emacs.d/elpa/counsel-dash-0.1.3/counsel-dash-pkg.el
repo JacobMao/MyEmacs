@@ -1,0 +1,2 @@
+;;; Generated package description from c:/Users/JacobMao/AppData/Roaming/.emacs.d/elpa/counsel-dash-0.1.3/counsel-dash.el  -*- no-byte-compile: t -*-
+(define-package "counsel-dash" "0.1.3" "Browse dash docsets using Ivy" '((emacs "24.4") (dash "2.12.1") (dash-functional "1.2.0") (helm-dash "1.3.0") (counsel "0.8.0")) :commit "a342340bbd8e50e4d1015e0b91d8ecd8f6cdf9f2" :keywords '("dash" "ivy" "counsel") :authors '(("Nathan Kot" . "nk@nathankot.com")) :maintainer '("Nathan Kot" . "nk@nathankot.com") :url "https://github.com/nathankot/counsel-dash")
