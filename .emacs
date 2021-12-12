@@ -1,7 +1,7 @@
 (setq package-archives
-      '(("elpa" . "http://elpa.emacs-china.org/gnu/")
-        ("melpa" . "http://elpa.emacs-china.org/melpa/")
-        ("melpa-stable" . "http://stable.melpa.org/packages/")))
+      '(("elpa" . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
@@ -182,7 +182,7 @@
  '(column-number-mode t)
  '(display-time-mode t)
  '(package-selected-packages
-   '(switch-window lsp-ui lsp-mode company-flx company smex expand-region fill-column-indicator modern-cpp-font-lock use-package counsel-dash dashboard magit markdown-mode org yasnippet lsp-mode  lsp-treemacs helm-lsp projectile hydra flycheck avy which-key helm-xref dap-mode ##))
+   '(swift-mode switch-window lsp-ui lsp-mode company-flx company smex expand-region fill-column-indicator modern-cpp-font-lock use-package counsel-dash dashboard magit markdown-mode org yasnippet lsp-mode lsp-treemacs helm-lsp projectile hydra flycheck avy which-key helm-xref dap-mode ##))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
